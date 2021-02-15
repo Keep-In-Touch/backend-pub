@@ -1,0 +1,28 @@
+- model: habit.DayOfWeek
+  pk: 1
+  fields:
+    day: Monday
+- model: habit.DayOfWeek
+  pk: 2
+  fields:
+    day: Tuesday
+- model: habit.DayOfWeek
+  pk: 3
+  fields:
+    day: Wednesday
+- model: habit.DayOfWeek
+  pk: 4
+  fields:
+    day: Thursday
+- model: habit.DayOfWeek
+  pk: 5
+  fields:
+    day: Friday
+- model: habit.DayOfWeek
+  pk: 6
+  fields:
+    day: Saturday
+- model: habit.DayOfWeek
+  pk: 7
+  fields:
+    day: Sunday

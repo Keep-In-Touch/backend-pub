@@ -1,0 +1,16 @@
+django
+djangorestframework
+drf-yasg
+psycopg2-binary
+psycopg2
+Pillow
+gunicorn
+python-decouple
+firebase_admin
+django-multiselectfield
+django-extensions
+Celery
+pyfcm
+pydotplus
+pyyaml
+coverage
