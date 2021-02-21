@@ -15,6 +15,9 @@ class RoleViewSet(viewsets.ModelViewSet):
         return {'request': self.request}
 
     def get_queryset(self):
+        if self.request.user.is_anonymous:
+            # for documentation only
+            return Role.objects.none()
         if self.request.user.is_superuser:
             return Role.objects.all()
         else:
@@ -29,6 +32,9 @@ class KitPersonViewSet(viewsets.ModelViewSet):
         return {'request': self.request}
 
     def get_queryset(self):
+        if self.request.user.is_anonymous:
+            # for documentation only
+            return KitPerson.objects.none()
         if self.request.user.is_superuser:
             return KitPerson.objects.all()
         else:
@@ -43,6 +49,9 @@ class InteractionViewSet(viewsets.ModelViewSet):
         return {'request': self.request}
 
     def get_queryset(self):
+        if self.request.user.is_anonymous:
+            # for documentation only
+            return Interaction.objects.none()
         if self.request.user.is_superuser:
             return Interaction.objects.all()
         else:
