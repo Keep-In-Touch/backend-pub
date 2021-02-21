@@ -172,16 +172,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "mediafiles")
 CELERY_BROKER_URL = 'amqp://user:password@rabbitmq:5672'
 
 CELERY_BEAT_SCHEDULE = {
-    "daily_regularity": {
-        "task": "kit_people.tasks.new_push_notification_daily",
-        "schedule": crontab(minute='*/1'),  # every 1 minute
-    },
-    "weekly_regularity": {
-        "task": "kit_people.tasks.new_push_notification_weekly",
-        "schedule": crontab(minute='*/1'),  # every 1 minute
-    },
-    "monthly_regularity": {
-        "task": "kit_people.tasks.new_push_notification_monthly",
+    "send_push_notifications": {
+        "task": "kit_people.tasks.push_notifications",
         "schedule": crontab(minute='*/1'),  # every 1 minute
     },
 }
