@@ -84,4 +84,4 @@ RUN chown -R app:app $APP_HOME
 USER app
 
 # run entrypoint.sh
-ENTRYPOINT ["/home/backend/web/entrypoint.prod.sh"]
+ENTRYPOINT ["/home/backend/web/entrypoint.sh"]
