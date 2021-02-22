@@ -5,7 +5,7 @@ from pyfcm import FCMNotification
 
 from backend.settings import FCM_API_KEY
 from firebase_auth.models import FCMToken
-from kit_people.models import Regularity, KitPerson
+from kit_people.models import Regularity, KitPerson, Interaction
 
 import logging
 
@@ -39,8 +39,8 @@ def send_in_reminder_time_or_by_default(regularity_id, reminder_hour, reminder_m
 
 def reminder_time_is_now(hour, minutes):
     if (
-        datetime.datetime.now().hour == hour
-        and datetime.datetime.now().minute == minutes
+            datetime.datetime.now().hour == hour
+            and datetime.datetime.now().minute == minutes
     ):
         return True
     return False
@@ -81,9 +81,9 @@ def push_notification_weekly():
                 )
         elif datetime.datetime.now().weekday() == 2:
             if (
-                regularity.times_a_week == 2
-                or regularity.times_a_week == 4
-                or regularity.times_a_week == 5
+                    regularity.times_a_week == 2
+                    or regularity.times_a_week == 4
+                    or regularity.times_a_week == 5
             ):
                 send_in_reminder_time_or_by_default(
                     regularity.id, regularity.reminder.hour, regularity.reminder.minute
@@ -136,7 +136,7 @@ def push_notification_monthly():
 
 
 def new_send_in_reminder_time_or_by_default(
-    regularity_id, reminder_hour, reminder_minute, user_id, user_reminders
+        regularity_id, reminder_hour, reminder_minute, user_id, user_reminders
 ):
     if reminder_hour is not None:
         if reminder_time_is_now(reminder_hour, reminder_minute):
@@ -193,9 +193,9 @@ def check_time_for_weekly(regularity_id):
             return True
     elif datetime.datetime.now().weekday() == 2:
         if (
-            regularity.times_a_week == 2
-            or regularity.times_a_week == 4
-            or regularity.times_a_week == 5
+                regularity.times_a_week == 2
+                or regularity.times_a_week == 4
+                or regularity.times_a_week == 5
         ):
             return True
     elif datetime.datetime.now().weekday() == 3:
@@ -253,7 +253,9 @@ def send_notifications_to_users_from_dict(user_reminders):
     for user_id in user_reminders.keys():
         kit_persons = []
         for regularity_id in user_reminders[user_id]:
-            kit_persons.append(KitPerson.objects.get(regularity=regularity_id))
+            kit_person = KitPerson.objects.get(regularity=regularity_id)
+            if not is_contacted_today(kit_person.id):
+                kit_persons.append(KitPerson.objects.get(regularity=regularity_id))
         others = ""
         if len(kit_persons) > 3:
             kit_persons = kit_persons[0:3]
@@ -269,6 +271,12 @@ def send_notifications_to_users_from_dict(user_reminders):
                     badge=1,
                 )
             )
+
+
+def is_contacted_today(kit_person_id):
+    if Interaction.objects.filter(kit_person=kit_person_id, date=datetime.datetime.now().date()).exists():
+        return True
+    return False
 
 
 def mergeDict(dict1, dict2):
