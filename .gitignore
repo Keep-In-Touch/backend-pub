@@ -3,3 +3,4 @@ db.sqlite3
 .idea
 .env.prod.db
 .env.prod
+/backend/firebase_key.json
