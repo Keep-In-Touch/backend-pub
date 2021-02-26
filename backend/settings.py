@@ -14,7 +14,7 @@ from pathlib import Path
 
 import firebase_admin
 from celery.schedules import crontab
-from decouple import config
+from decouple import Config, RepositoryEnv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from firebase_admin import credentials
@@ -24,13 +24,17 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
+ENV_FILE = os.path.join(BASE_DIR, ".env.prod")
+env_config = Config(RepositoryEnv(ENV_FILE))
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config("SECRET_KEY")
+SECRET_KEY = env_config.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = int(config("DEBUG", default=0))
+DEBUG = int(env_config.get("DEBUG", default=0))
 
-ALLOWED_HOSTS = config("DJANGO_ALLOWED_HOSTS").split(" ")
+
+ALLOWED_HOSTS = env_config.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 # Application definition
 
@@ -91,22 +95,22 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": config("SQL_ENGINE", ),
-        "NAME": config("SQL_DATABASE", ),
-        "USER": config("SQL_USER", ),
-        "PASSWORD": config("SQL_PASSWORD", ),
-        "HOST": config("SQL_HOST", ),
-        "PORT": config("SQL_PORT", ),
-    }
-}
 # DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
+#     "default": {
+#         "ENGINE": env_config.get("SQL_ENGINE", ),
+#         "NAME": env_config.get("SQL_DATABASE", ),
+#         "USER": env_config.get("SQL_USER", ),
+#         "PASSWORD": env_config.get("SQL_PASSWORD", ),
+#         "HOST": env_config.get("SQL_HOST", ),
+#         "PORT": env_config.get("SQL_PORT", ),
 #     }
 # }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -178,7 +182,7 @@ CELERY_BEAT_SCHEDULE = {
     },
 }
 
-FCM_API_KEY = str(config("FCM_API_KEY"))
+FCM_API_KEY = str(env_config.get("FCM_API_KEY"))
 
 LOGGING = {
     'version': 1,
