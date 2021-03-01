@@ -89,6 +89,6 @@ class LessonViewSet(viewsets.ModelViewSet):
 
     @action(methods=['get'], detail=False, permission_classes=[permissions.IsAuthenticated], url_path='liked-lessons')
     def liked_lessons(self, request, *args, **kwargs):
-        liked_lessons = Lesson.objects.filter(lessonlike__user=self.request.user)
+        liked_lessons = Lesson.objects.filter(likes__user=self.request.user)
         serializer = LessonSerializer(liked_lessons, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

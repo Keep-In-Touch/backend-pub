@@ -19,6 +19,7 @@ class Lesson(models.Model):
     image = models.ImageField(_('image'), blank=True, null=True)
     section = models.ForeignKey(Section, models.CASCADE, verbose_name=_('section'))
 
+
     def __str__(self):
         return self.name
 
