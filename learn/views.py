@@ -37,7 +37,8 @@ class LessonViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.action in ('list', 'retrieve'):
-            return Lesson.objects.all().select_related('section').prefetch_related('likes').annotate(likes_total=Count('likes'))
+            return Lesson.objects.all().select_related('section').prefetch_related('likes').annotate(
+                likes_total=Count('likes'))
         else:
             return Lesson.objects.all()
 
@@ -89,6 +90,7 @@ class LessonViewSet(viewsets.ModelViewSet):
 
     @action(methods=['get'], detail=False, permission_classes=[permissions.IsAuthenticated], url_path='liked-lessons')
     def liked_lessons(self, request, *args, **kwargs):
-        liked_lessons = Lesson.objects.filter(likes__user=self.request.user)
+        liked_lessons = Lesson.objects.filter(likes__user=self.request.user).select_related('section').prefetch_related(
+            'likes').annotate(likes_total=Count('likes'))
         serializer = LessonSerializer(liked_lessons, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
