@@ -1,8 +1,8 @@
-from django.db.models import Sum, Count
+from django.db.models import Count
 from django.http import Http404
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
-from rest_framework import permissions, viewsets, mixins, status
+from rest_framework import permissions, viewsets, status
 
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
@@ -45,6 +45,34 @@ class LessonViewSet(viewsets.ModelViewSet):
     @method_decorator(cache_page(60))
     def list(self, request, *args, **kwargs):
         return super(LessonViewSet, self).list(request, *args, **kwargs)
+
+    @action(methods=['get'], detail=False, permission_classes=[permissions.IsAuthenticated], url_path='lessonsB')
+    def listB(self, request, *args, **kwargs):
+        queryset = Lesson.objects.filter(group=Lesson.LessonGroup.B).select_related('section').prefetch_related(
+            'likes').annotate(
+            likes_total=Count('likes'))
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(methods=['get'], detail=False, permission_classes=[permissions.IsAuthenticated], url_path='lessonsA')
+    def listA(self, request, *args, **kwargs):
+        queryset = Lesson.objects.filter(group=Lesson.LessonGroup.A).select_related('section').prefetch_related(
+            'likes').annotate(
+            likes_total=Count('likes'))
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
     @action(methods=['PUT'], detail=True, parser_classes=[MultiPartParser], serializer_class=ImageLessonSerializer)
     def image(self, request, *args, **kwargs):

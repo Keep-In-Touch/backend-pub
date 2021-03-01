@@ -22,7 +22,6 @@ class Role(models.Model):
         return self.name
 
 
-# TODO Date without year
 class KitPerson(models.Model):
     class Priority(models.TextChoices):
         TOP = 'T', _('Top')

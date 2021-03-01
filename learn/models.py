@@ -19,6 +19,11 @@ class Lesson(models.Model):
     image = models.ImageField(_('image'), blank=True, null=True)
     section = models.ForeignKey(Section, models.CASCADE, verbose_name=_('section'))
 
+    class LessonGroup(models.TextChoices):
+        A = 'A', _('Group A')
+        B = 'B', _('Group B')
+
+    group = models.CharField(_("group"), choices=LessonGroup.choices, default=LessonGroup.A, max_length=2)
 
     def __str__(self):
         return self.name
