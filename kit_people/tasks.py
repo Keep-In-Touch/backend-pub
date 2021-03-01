@@ -1,3 +1,5 @@
+from random import randrange
+
 from celery import shared_task
 import datetime
 
@@ -262,15 +264,23 @@ def send_notifications_to_users_from_dict(user_reminders):
             others = " and the others"
         kp_names = ", ".join([str(kp.name) for kp in kit_persons])
         fcm_tokens = FCMToken.objects.filter(user=user_id)
+        message = create_message(kp_names)
         for token in fcm_tokens:
             logger.info(
                 push_service.notify_single_device(
                     token.token,
-                    f"Remember to contact {kp_names}{others}",
+                    f"{message}{others}",
                     "Stay in touch",
                     badge=1,
                 )
             )
+
+
+def create_message(kp_names):
+    messages = ["Remember to contact", "Reach out to", "Stay in touch with", "Keep your connections warm. Contact"]
+    rand_message_index = randrange(len(messages))
+    result_message = f"{messages[rand_message_index]} {kp_names}"
+    return result_message
 
 
 def is_contacted_today(kit_person_id):
