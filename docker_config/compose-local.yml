@@ -1,0 +1,96 @@
+version: "3.0"
+services:
+  db:
+    image: postgres:latest
+    env_file:
+      - ../.env.prod.db
+    ports:
+      - "5432:5432"
+    expose:
+      - "5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+
+  web:
+    build:
+      context: ../
+      dockerfile: docker_config/main.Dockerfile
+    privileged: true
+    deploy:
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 60s
+    image: python:3.9-slim
+    env_file:
+      - ../.env.prod
+    expose:
+      - 8000
+    container_name: kit_web
+    volumes:
+      - ../:/src/
+      - static_volume:/src/staticfiles
+      - media_volume:/src/mediafiles
+    depends_on:
+      - db
+      - rabbitmq
+  nginx:
+    build: ../nginx
+    volumes:
+      - static_volume:/src/staticfiles
+      - media_volume:/src/mediafiles
+      - ../data/certbot/conf:/etc/letsencrypt
+      - ../data/certbot/www:/var/www/certbot
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - web
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ../data/certbot/conf:/etc/letsencrypt
+      - ../data/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+  rabbitmq:
+    image: rabbitmq:3
+    ports:
+      - 5672:5672
+    env_file:
+      - ../.env.prod
+
+  celery:
+    build:
+      context: ../
+      dockerfile: ./docker_config/main.Dockerfile
+    command: celery -A backend worker -l INFO
+    volumes:
+      - ../:/usr/src/backend/
+    env_file:
+      - ../.env.prod
+    depends_on:
+      - rabbitmq
+      - db
+
+  celery-beat:
+    build:
+      context: ../
+      dockerfile: ./docker_config/main.Dockerfile
+    command: celery -A backend beat -l INFO
+    env_file:
+      - ../.env.prod
+    volumes:
+      - ../:/usr/src/backend/
+    depends_on:
+      - rabbitmq
+      - db
+
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
+
