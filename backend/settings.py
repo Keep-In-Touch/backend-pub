@@ -33,7 +33,6 @@ SECRET_KEY = env_config.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = int(env_config.get("DEBUG", default=0))
 
-
 ALLOWED_HOSTS = env_config.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 # Application definition
@@ -173,7 +172,7 @@ REST_FRAMEWORK = {
 MEDIA_URL = "/mediafiles/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "mediafiles")
 
-CELERY_BROKER_URL = 'amqp://user:password@rabbitmq:5672'
+CELERY_BROKER_URL = f'amqp://{(env_config.get("RABBITMQ_DEFAULT_USER"))}:{(env_config.get("RABBITMQ_DEFAULT_PASS"))}@rabbitmq:5672'
 
 CELERY_BEAT_SCHEDULE = {
     "send_push_notifications": {
