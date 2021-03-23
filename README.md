@@ -19,19 +19,17 @@ To run local server for test run this command:
 Server will be launched on `localhost:8000`
 
 ## Remote test server
-**`10.90.137.154:1337`**
+**`10.90.137.154:1337`** available only from Innopolis network
 
 
 ## Remote server
-You can send requests to remote server: **`64.225.94.45`** or **`keep-in-touch.tk`**
+You can send requests to remote server: **`keep-in-touch.tk`**
 
 
 ## Endpoints description
-* `http://64.225.94.45/swagger/`
 * `keep-in-touch.tk/swagger/`
 
 ## Admin panel
-* `http://64.225.94.45/admin/`
 * `keep-in-touch.tk/admin/`
 
 
