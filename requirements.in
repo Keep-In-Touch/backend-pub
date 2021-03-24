@@ -14,3 +14,6 @@ pyfcm
 pydotplus
 pyyaml
 coverage
+pytest
+pytest-cov
+pytest-django
