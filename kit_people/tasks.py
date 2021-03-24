@@ -261,7 +261,7 @@ def send_notifications_to_users_from_dict(user_reminders):
         others = ""
         if len(kit_persons) > 3:
             kit_persons = kit_persons[0:3]
-            others = " and the others"
+            others = " and others"
         kp_names = ", ".join([str(kp.name) for kp in kit_persons])
         fcm_tokens = FCMToken.objects.filter(user=user_id)
         message = create_message(kp_names)

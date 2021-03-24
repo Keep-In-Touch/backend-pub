@@ -26,6 +26,8 @@ services:
     image: python:3.9-slim
     env_file:
       - ../.env.prod
+    environment:
+      - DJANGO_SETTINGS_MODULE=backend.settings.main
     expose:
       - 8000
     container_name: kit_web
