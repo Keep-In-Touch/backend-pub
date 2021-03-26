@@ -2,7 +2,7 @@
 
 ## Requirements
 
-Python 3.7.
+Python 3.9
 
 **pip-tools** is used for the management of requirements: https://github.com/jazzband/pip-tools.
 
