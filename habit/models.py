@@ -15,7 +15,7 @@ class Habit(models.Model):
     periodicity = models.OneToOneField('Periodicity', on_delete=models.DO_NOTHING,
                                        verbose_name=_('periodicity'))
     goal = models.OneToOneField('Goal', on_delete=models.DO_NOTHING, verbose_name=_('goal'), related_name=_('habit'))
-    start_day = models.DateField(default=django.utils.timezone.now, blank=True)
+    start_day = models.DateField(default=now().date().today(), blank=True)
     is_good = models.BooleanField()
 
     # day_periodicity = models.OneToOneField('DayPeriodicity', on_delete=models.DO_NOTHING,
